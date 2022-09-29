@@ -43,6 +43,7 @@ $autoloads = Autoloader::autoload( $autoloads );
 
 new Standard;
 
-$container = Container::containerClass();
+$container = Container::getContainerClass();
 $container = new $container;
+
 return $container;
