@@ -24,11 +24,6 @@ abstract class ContainerAbstract implements ContainerInterface
       $this->config( $directory );
     }
 
-    $registry = PROJECT_NAME . '\\' . 'Registry' . '\\' . 'Registry';
-    if ( class_exists( $registry ) ) {
-      $registry::set( get_class( $this ), $this, [ 'directory' => $directory ] );
-    }
-
   }
 
   public function set( $id, $service )
@@ -60,20 +55,13 @@ abstract class ContainerAbstract implements ContainerInterface
 
   }
 
-  protected function create( $id, array $args = null )
+  protected function create( $id )
   {
 
     $service = false;
-    $args = (array) $args;
 
-    $fn_args = func_get_args();
-    if ( ! isset( $fn_args[2] ) ) {
-        $directory = $this->config();
-	} else {
-        $directory = $fn_args[2];
-    }
-    $directory = rtrim( $directory, DS ) . DS;
-    $name = static::getName( $id );
+    $directory = rtrim( $this->config(), DS ) . DS;
+    $name = $this->getName( $id );
 
 	$directory = $directory . $name . DS;
 	$readable = $directory . $name . 'service.php';
@@ -81,7 +69,7 @@ abstract class ContainerAbstract implements ContainerInterface
     if ( ! is_readable( $readable ) ) {
       throw new Exception( 'Unreadable: ' . (string) $readable );
     }
-    $class = static::getClass( $id );
+    $class = $this->getServiceClass( $id );
 
     $container = new $class( $this );
     return $container;
@@ -114,34 +102,25 @@ abstract class ContainerAbstract implements ContainerInterface
 
   }
 
-  protected function run( $fn_name, array $args = [] )
-  {
-
-    $dependencies = $this->get( Dependencies::class );
-    $result = $dependencies->runUser( $fn_name, $args );
-
-    return $result;
-
-  }
-
-  public static function getName( $id )
-  {
-
-    $name = str_replace( '\\', '', strtolower( $id ) );
-    return $name;
-
-  }
-
-  public static function getClass( $id )
+  public function getServiceClass( $id )
   {
 
     $name = static::getName( $id );
     $class = static::getNamespace() . '\\' . 'Services' . '\\' . $name . '\\' . $name . 'service';
+
     return $class;
 
   }
 
-  public static function containerClass()
+  public function getName( $id )
+  {
+
+    $id = str_replace( '\\', '', strtolower( $id ) );
+    return $id;
+
+  }
+
+  public static function getContainerClass()
   {
 
     $class = PROJECT_NAME . '\\' . 'Container' . '\\' . 'Container';
