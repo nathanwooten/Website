@@ -10,10 +10,9 @@ use nathanwooten\{
 
 class Container extends ContainerAbstract {
 
-  public function __construct()
-  {
+  public function __construct() {
 
-    parent::__construct( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'Services' );
+    parent::__construct( dirname( __FILE__ ) . DS . 'Services' . DS );
 
   }
 
