@@ -26,19 +26,16 @@ class Standard implements StandardInterface
   public function loadnathanwooten()
   {
 
-    Autoloader::autoload( [
-
+    $autoloads = [
       LIB_PATH . 'nathanwooten' => [
-        [
-          'nathanwooten\Registry',
-          'registry' . DS . 'src'
-        ],
         [
           'nathanwooten\Container',
           'container' . DS . 'src'
         ]
       ]
-    ] );
+    ];
+
+    Autoloader::autoload( $autoloads );
 
   }
 
