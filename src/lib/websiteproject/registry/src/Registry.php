@@ -4,8 +4,8 @@ namespace websiteproject\Registry;
 
 use nathanwooten\{
 
-  Standard\StandardRegistry
+  Registry\RegistryAbstract
 
 };
 
-class Registry extends StandardRegistry {}
+class Registry extends RegistryAbstract {}

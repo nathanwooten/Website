@@ -10,6 +10,8 @@ use nathanwooten\{
 
 };
 
+use function orDefault;
+
 use Exception;
 
 abstract class ContainerService
@@ -19,7 +21,7 @@ abstract class ContainerService
 
   protected ContainerInterface $container;
 
-  protected $id = IdClass::class;
+  protected $id;
   protected $args = [];
 
   protected $load = [];
@@ -30,7 +32,10 @@ abstract class ContainerService
 
     $this->container = $container;
 
-    $this->load( ...$this->load );
+    if ( ! empty( $this->load ) ) {
+      $this->load( ...$this->load );
+    }
+
   }
 
   public function service( ...$args )
@@ -41,7 +46,13 @@ abstract class ContainerService
       $service = $this->id;
       $args = $this->args( $args );
 
-      $service = new $service( ...$args );
+      if ( ! method_exists( $this, $this->getName() ) ) {
+		$service = new $service( ...$args );
+
+      } else {
+        $this->{$this->getName()}();
+
+      }
 
       if ( $this->isFactory() ) {
         return $service;
@@ -85,10 +96,17 @@ abstract class ContainerService
 
   }
 
-  public function orDefault( $property, $value = null )
+  public function getName()
   {
 
-    return $this->standardRun( __FUNCTION__, [ $this, $property, $value ] );    
+    return getName( $this->id );
+
+  }
+
+  public function orDefault( $property, $value = null, string $getter = null )
+  {
+
+    return orDefault( $this, $property, $value, $getter );
 
   }
 

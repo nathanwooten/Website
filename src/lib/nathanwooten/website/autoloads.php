@@ -5,7 +5,7 @@ if ( ! defined( 'PROJECT_PATH' ) ) die( __FILE__ );
 if ( ! defined( 'PROJECT_DEPENDENCIES' ) ) {
   $dependencies = [];
 
-  $project_path = PROJECT_PATH . 'local' . DS . PROJECT_NAME . DS;
+  $project_path = LIB_PATH . PROJECT_NAME . DS;
 
   $scan = scandir( $project_path );
 
@@ -27,21 +27,16 @@ if ( ! defined( 'PROJECT_DEPENDENCIES' ) ) {
 
 if ( ! defined( 'DEPENDENCIES' ) ) define( 'DEPENDENCIES', [
 
-  PROJECT_PATH . 'local' => [
+  LIB_PATH => [
 
     [
       'nathanwooten\Standard',
       'nathanwooten' . DS . 'standard' . DS . 'src'
     ],
 
-    [
-      'nathanwooten\Container',
-      'nathanwooten' . DS . 'container' . DS . 'src'
-    ],
-
   ],
 
-  PROJECT_PATH . 'local' . DS . PROJECT_NAME => [
+  LIB_PATH . PROJECT_NAME => [
 
     ...PROJECT_DEPENDENCIES
 

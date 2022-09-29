@@ -4,13 +4,10 @@
 
 use nathanwooten\{
 
-  Autoloader
+  Autoloader,
 
-};
-
-use websiteproject\{
-
-  Container\Container
+  Standard\Standard,
+  Container\ContainerAbstract as Container
 
 };
 
@@ -37,13 +34,15 @@ function handleError( Exception $e ) {
 
 if ( ! defined( 'DS' ) ) define( 'DS', DIRECTORY_SEPARATOR );
 
-require_once PROJECT_PATH . 'local' . DS . 'nathanwooten' . DS . 'autoloader' . DS . 'src' . DS . 'Autoloader.php';
+$autoloader = LIB_PATH . 'nathanwooten' . DS . 'autoloader' . DS . 'src' . DS . 'Autoloader.php';
+require_once $autoloader;
 
-$autoloads = require PROJECT_PATH . 'local' . DS . 'nathanwooten' . DS . 'website' . DS . 'autoloads.php';
+$autoloads = require LIB_PATH . 'nathanwooten' . DS . 'website' . DS . 'autoloads.php';
 
 $autoloads = Autoloader::autoload( $autoloads );
 
-websiteproject\Registry\Registry::set( 'value', 'value' );
+new Standard;
 
-$container = new Container;
+$container = Container::containerClass();
+$container = new $container;
 return $container;

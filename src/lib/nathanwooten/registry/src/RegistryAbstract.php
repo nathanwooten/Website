@@ -1,9 +1,9 @@
 <?php
 
-namespace nathanwooten\Standard;
+namespace nathanwooten\Registry;
 
-if ( ! class_exists( 'nathanwooten\Standard\StandardRegistry' ) ) {
-abstract class StandardRegistry
+if ( ! class_exists( 'nathanwooten\Registry\RegistryAbstract' ) ) {
+abstract class RegistryAbstract
 {
 
   protected static array $registry = [];

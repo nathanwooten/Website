@@ -1,5 +1,15 @@
 <?php
 
+if ( ! function_exists( 'getName' ) ) {
+function getName( $class )
+{
+
+  $name = str_replace( '\\', '', strtolower( $class ) );
+  return $name;
+
+}
+}
+
 if ( ! function_exists( 'fSNorm' ) ) {
 function fsNorm( $path, $before = '', $after = '', $separator = DIRECTORY_SEPARATOR )
 {
@@ -28,7 +38,7 @@ function fsNorm( $path, $before = '', $after = '', $separator = DIRECTORY_SEPARA
 }
 
 if ( ! function_exists( 'orDefault' ) ) {
-public function orDefault( $object, $property, $value = null, string $getter = null )
+function orDefault( $object, $property, $value = null, string $getter = null )
 {
 
   if ( isset( $value ) ) {

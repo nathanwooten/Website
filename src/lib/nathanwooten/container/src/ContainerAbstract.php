@@ -8,13 +8,6 @@ use nathanwooten\{
 
 };
 
-use websiteproject\{
-
-  Container\Dependencies,
-  Registry\Registry
-
-};
-
 use Exception;
 
 abstract class ContainerAbstract implements ContainerInterface
@@ -31,9 +24,10 @@ abstract class ContainerAbstract implements ContainerInterface
       $this->config( $directory );
     }
 
-    $this->set( Dependencies::class, $this->create( Dependencies::class ) );
-
-    Registry::set( get_class( $this ), $this, [ 'directory' => $directory ] );
+    $registry = PROJECT_NAME . '\\' . 'Registry' . '\\' . 'Registry';
+    if ( class_exists( $registry ) ) {
+      $registry::set( get_class( $this ), $this, [ 'directory' => $directory ] );
+    }
 
   }
 
@@ -54,15 +48,13 @@ abstract class ContainerAbstract implements ContainerInterface
     if ( array_key_exists( $id, $this->services ) ) {
       $container = $this->services[ $id ];
 
-      $service = $container->service( ...$args );
-
     } else {
-
       $container = $this->create( $id );
-      $this->set( $id, $container );
 
-      $service = $container->service( ...$args );
+      $this->set( $id, $container );
     }
+
+    $service = $container->service( ...$args );
 
     return $service;
 
@@ -70,7 +62,7 @@ abstract class ContainerAbstract implements ContainerInterface
 
   protected function create( $id, array $args = null )
   {
-var_dump( $id );
+
     $service = false;
     $args = (array) $args;
 
@@ -126,7 +118,7 @@ var_dump( $id );
   {
 
     $dependencies = $this->get( Dependencies::class );
-    $result = $dependencies->runUser( $fn_nmae, $args );
+    $result = $dependencies->runUser( $fn_name, $args );
 
     return $result;
 
@@ -145,6 +137,14 @@ var_dump( $id );
 
     $name = static::getName( $id );
     $class = static::getNamespace() . '\\' . 'Services' . '\\' . $name . '\\' . $name . 'service';
+    return $class;
+
+  }
+
+  public static function containerClass()
+  {
+
+    $class = PROJECT_NAME . '\\' . 'Container' . '\\' . 'Container';
     return $class;
 
   }
