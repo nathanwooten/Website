@@ -1,7 +1,15 @@
 <?php
 
-if ( ! function_exists( 'getName' ) ) {
-function getName( $class )
+use nathanwooten\{
+
+  Registry\RegistryAbstract
+
+};
+
+if ( ! defined( 'PROJECT_PATH' ) ) die( __FILE__ );
+
+if ( ! function_exists( 'className' ) ) {
+function className( $class )
 {
 
   $name = str_replace( '\\', '', strtolower( $class ) );
@@ -10,8 +18,108 @@ function getName( $class )
 }
 }
 
-if ( ! function_exists( 'fSNorm' ) ) {
-function fsNorm( $path, $before = '', $after = '', $separator = DIRECTORY_SEPARATOR )
+if ( ! function_exists( 'classContainer' ) ) {
+function classContainer()
+{
+
+  return getClass( PROJECT_PATH, 'Container', 'Container' );
+
+}
+}
+
+if ( ! function_exists( 'classRegistry' ) ) {
+function classRegistry()
+{
+
+  return getClass( PROJECT_PATH, 'Registry', 'Registry' );
+
+}
+}
+
+if ( ! function_exists( 'getClass' ) ) {
+function getClass( $vendor, $type, $class_name ) {
+
+  return implode_class( $vendor, $type, $class_name );
+
+}
+}
+
+if ( ! function_exists( 'implode_class' ) ) {
+function implode_class( $vendor, $type, $class_name )
+{
+
+	return implode( '\\', ...func_get_args() );
+
+}
+}
+
+if ( ! function_exists( 'getCallbackName' ) ) {
+function getCallbackName( callable $callback )
+{
+
+  if ( is_array( $callback ) ) {
+    return get_class( $callback[0] ) . '::' . $callback[1];
+  }
+
+  return (string) $callback;
+
+}
+}
+
+if ( ! function_exists( 'getTarget' ) ) {
+function getTarget( $uri = null )
+{
+
+  $registry = getRegistryClass();
+  $containerClass = getContainerClass();
+
+  $container = $registry::get( $containerClass );
+
+  if ( ! isset( $uri ) ) {
+    $uri = $container->get( Uri::class );
+  }
+
+  if ( is_string( $uri ) ) {
+    $uri = $container->get( Uri::class, [ $uri ] );
+  }
+
+  $target = $uri->getTarget();
+
+  if ( is_file( PROJECT_PATH . $target ) ) {
+
+    $target = str_replace( basename( $target ), '', $target );
+  }
+  $target = trim( $target, '/' );
+
+  return $target;
+
+}
+}
+
+if ( ! function_exists( 'urlRelative' ) ) {
+function urlRelative( $url )
+{
+
+  $dir = '';
+
+  $subfolder = trim( $url, '/' );
+
+  if ( false !== strpos( $subfolder, '/' ) ) {
+    $explode = explode( '/', $url );
+    if ( ! empty( $explode ) ) {
+      foreach ( $explode as $exp ) {
+        $dir = '../' . $dir;
+      }
+    }
+  }
+
+  return $dir;
+
+}
+}
+
+if ( ! function_exists( 'pathNormalize' ) ) {
+function pathNormalize( $path, $before = '', $after = '', $separator = DIRECTORY_SEPARATOR )
 {
 
 	$path = str_replace( [ '\\', '/' ], $separator, $path );
@@ -37,8 +145,8 @@ function fsNorm( $path, $before = '', $after = '', $separator = DIRECTORY_SEPARA
 }
 }
 
-if ( ! function_exists( 'orDefault' ) ) {
-function orDefault( $object, $property, $value = null, string $getter = null )
+if ( ! function_exists( 'valueOrProperty' ) ) {
+function valueOrProperty( $object, $property, $value = null, string $getter = null )
 {
 
   if ( isset( $value ) ) {
