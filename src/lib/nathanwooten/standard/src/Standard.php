@@ -2,7 +2,7 @@
 
 namespace nathanwooten\Standard;
 
-if ( ! defined( 'PROJECT_PATH' ) ) die( __FILE__ );
+if ( ! defined( 'LIB_PATH' ) ) define( 'LIB_PATH', dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . DIRECTORY_SEPARATOR );
 
 use nathanwooten\{
 
@@ -28,6 +28,10 @@ class Standard implements StandardInterface
 
     $autoloads = [
       LIB_PATH . 'nathanwooten' => [
+        [
+          'nathanwooten\Standard',
+          'standard' . DS . 'src'
+        ],
         [
           'nathanwooten\Container',
           'container' . DS . 'src'
