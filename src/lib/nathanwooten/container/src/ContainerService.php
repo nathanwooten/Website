@@ -4,9 +4,7 @@ namespace nathanwooten\Container;
 
 use nathanwooten\{
 
-  Autoloader,
-
-  Standard\StandardRun
+  Autoloader
 
 };
 
@@ -17,23 +15,23 @@ use Exception;
 abstract class ContainerService
 {
 
-  use StandardRun;
-
   protected ContainerInterface $container;
 
   protected $id;
-  protected $args = [];
+  protected array $args = [];
+  protected array $methods = [];
 
-  protected $load = [];
-  protected $property = [];
+  protected array $property = [];
+
+  protected array $add = [];
 
   public function __construct( ContainerInterface $container )
   {
 
     $this->container = $container;
 
-    if ( ! empty( $this->load ) ) {
-      $this->load( ...$this->load );
+    if ( ! empty( $this->add ) ) {
+      $this->add( $this->add );
     }
 
   }
@@ -65,24 +63,28 @@ abstract class ContainerService
 
   }
 
-  public function args( $args )
+  public function args( array $args = null )
   {
 
-	$this->args = $this->orDefault( 'args', $args );
-    return $this->args;
+    if ( ! isset( $args ) ) {
+      if ( ! isset( $this->args ) ) {
+        $args = [];
+      } else {
+        $args = $this->args;
+      }
+    } elseif ( empty( $args ) ) {
+      $args = $this->args;
+    }
 
-  }
-
-  public function load( ...$load )
-  {
-
-    if ( ! empty( $load ) ) {
-      $index = Autoloader::add( ...$load );
-      if ( is_integer( $index ) ) {
-        $package = Autoloader::get( $index );
-        return $package;
+    foreach ( $args as $key => $arg ) {
+      if ( is_string( $arg ) && class_exists( $arg ) ) {
+        $args[ $key ] = $this->getContainer()->get( $arg );
       }
     }
+
+
+    return $this->args = $args;
+
   }
 
   public function isFactory()
@@ -99,14 +101,23 @@ abstract class ContainerService
   public function getName()
   {
 
-    return getName( $this->id );
+    return str_replace( '\\', '', strtolower( $this->id ) );
 
   }
 
-  public function orDefault( $property, $value = null, string $getter = null )
+  public function add( array $add )
   {
 
-    return orDefault( $this, $property, $value, $getter );
+    foreach ( $add as $pair ) {
+      Autoloader::add( ...$pair );
+    }
+
+  }
+
+  public function getContainer()
+  {
+
+    return $this->container;
 
   }
 
