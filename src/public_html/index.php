@@ -2,9 +2,15 @@
 
 $container = require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'require.php';
 
+// I know, below
+use nathanwooten\{
+
+  Http\Request
+
+};
+
 // App...
 
-var_dump( $container );
+$request = $container->get( Request::class );
 
-$uri = $container->get( nathanwooten\Uri\Uri::class );
-var_dump( $uri );
+var_dump( $request );
